@@ -27,9 +27,6 @@ const Index = () => {
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
-    // filterByCategory(category); // This would trigger a new fetch. 
-    // Alternatively, we can just fetch once and filter client side if we have enough data.
-    // For Pexels API, "category" is basically a search query.
     filterByCategory(category);
   };
 
