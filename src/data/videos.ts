@@ -135,9 +135,50 @@ export const CATEGORIES = [
 ];
 
 
+// Helper to shuffle an array
+const shuffleArray = <T>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
+export const fetchMixedVideos = async (page: number = 1): Promise<Video[]> => {
+  if (!API_KEY || API_KEY === "your_api_key_here") {
+    if (page > 1) return [];
+    return fallbackVideos;
+  }
+
+  try {
+    // Pick 3 random categories to fetch from for this page
+    // We use the page number to rotate categories if we wanted determinstic, 
+    // but random is fine for "mixed" feel.
+    const shuffledCategories = shuffleArray([...CATEGORIES]);
+    const selectedCategories = shuffledCategories.slice(0, 3);
+
+    // Fetch from selected categories in parallel
+    const promises = selectedCategories.map(cat =>
+      fetchVideos(cat, page).then(videos => videos.slice(0, 4)) // Take top 4 from each
+    );
+
+    const results = await Promise.all(promises);
+    const combinedVideos = results.flat();
+
+    // Shuffle the combined results so they are mixed in the feed
+    return shuffleArray(combinedVideos);
+
+  } catch (error) {
+    console.error("Error fetching mixed videos:", error);
+    if (page > 1) return [];
+    return fallbackVideos;
+  }
+}
+
 export async function fetchVideosByCategory(category: string, page: number = 1): Promise<Video[]> {
   if (category === "All") {
-    return fetchVideos("general", page);
+    return fetchMixedVideos(page);
   }
   return fetchVideos(category, page);
 }

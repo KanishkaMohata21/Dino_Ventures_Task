@@ -42,7 +42,7 @@ export function VideoProvider({ children }: { children: React.ReactNode }) {
     const loadVideos = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchVideos("nature", 1);
+        const data = await fetchVideosByCategory("All", 1);
         setVideos(data);
         setHasMore(data.length > 0);
       } catch (error) {
