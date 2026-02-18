@@ -1,4 +1,4 @@
-# Dino Play 🦖
+# Dino Play 
 
 Dino Play is a modern, responsive video streaming application built with React and TypeScript. It features a premium UI, dynamic content fetching from the Pexels API, infinite scrolling, and a custom video player experience.
 
